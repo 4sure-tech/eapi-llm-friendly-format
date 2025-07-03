@@ -1,0 +1,1 @@
+# llm-friendly-docs
