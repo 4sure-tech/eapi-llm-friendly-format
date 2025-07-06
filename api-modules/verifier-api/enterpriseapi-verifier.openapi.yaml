@@ -1,0 +1,2572 @@
+openapi: 3.0.0
+paths:
+  /health:
+    get:
+      operationId: HealthController_selfCheck
+      summary: this api check application running health
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+          x-gitbook-description-html: <p>The Health Check is successful</p>
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+          x-gitbook-description-html: <p>The Health Check is not successful</p>
+      tags:
+        - health
+  /api/lob/{lob_id}/define-proof-request:
+    post:
+      operationId: ProofController_proofDefine
+      summary: >-
+        The Define Proof Request API is called to create and store a proof
+        request template
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProofDefineRequest'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofDefineResponse'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define
+  /api/lob/{lob_id}/defined-proofs:
+    get:
+      operationId: ProofController_getDefineProofRequest
+      summary: >-
+        The Retrieve All Defined Proofs API is called to retrieve all stored
+        proof requests
+      parameters:
+        - name: search
+          required: false
+          in: query
+          schema: {}
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          schema: {}
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema: {}
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema: {}
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      responses:
+        '200':
+          description: API request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveProofDefineResponse'
+          x-gitbook-description-html: <p>API request processed successfully</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define
+  /api/lob/{lob_id}/proof/send-oob:
+    post:
+      operationId: ProofController_sendOOBProofRequest
+      summary: >-
+        The Send Out of Band Proof Request API is called to send a proof request
+        as an out-of-band request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+        - name: connectionless
+          required: true
+          in: query
+          example: false
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OOBProofRequest'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendOObResponse'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof/url:
+    post:
+      operationId: ProofController_sendQrProofRequest
+      summary: >-
+        The Prepare URL for Proof Request API is called to prepare a URL-based
+        proof request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+        - name: connectionless
+          required: true
+          in: query
+          example: false
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRProofRequest'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendPresentationQrResponse'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof/send-contact:
+    post:
+      operationId: ProofController_sendProofRequest
+      summary: >-
+        The Send Proof Request to Contact API is called to send a proof request
+        to an established contact
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendProofRequest'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendPresentationResponse'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof-request/{cred_proof_id}:
+    get:
+      operationId: ProofController_presentProofRequestStatus
+      summary: Retrieve Status of A Proof Request
+      parameters:
+        - name: cred_proof_id
+          required: true
+          in: path
+          description: >-
+            Unique identifier for the proof request is used to check the status
+            of the credential exchange interaction with the holder’s wallet
+          schema: {}
+          x-gitbook-description-html: >-
+            <p>Unique identifier for the proof request is used to check the
+            status of the credential exchange interaction with the holder’s
+            wallet</p>
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema: {}
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      responses:
+        '200':
+          description: API request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofRequestStatusResponse'
+          x-gitbook-description-html: <p>API request processed successfully</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof-requests:
+    get:
+      operationId: ProofController_retrieveProofRequests
+      summary: Retrieve status of all proof requests
+      parameters:
+        - name: state
+          required: false
+          in: query
+          schema:
+            enum:
+              - proposal-sent
+              - proposal-received
+              - request-sent
+              - request-received
+              - presentation-sent
+              - presentation-received
+              - presentation-requested
+              - done
+              - abandoned
+              - deleted
+              - verified
+            type: string
+        - name: search
+          required: false
+          in: query
+          schema: {}
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          schema: {}
+        - name: page
+          required: false
+          in: query
+          example: 1
+          schema: {}
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema: {}
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      responses:
+        '200':
+          description: API request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofRequestResponse'
+          x-gitbook-description-html: <p>API request processed successfully</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof-request:
+    delete:
+      operationId: ProofController_deleteProofRequest
+      summary: The Delete Proof Request API is called to delete a stored proof request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteProofRequest'
+      responses:
+        '200':
+          description: API request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProofRequestResponse'
+          x-gitbook-description-html: <p>API request processed successfully</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof/verify:
+    post:
+      operationId: ProofController_verifyProofRequest
+      summary: The Verify Proof Request API is called to verify a proof request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyProofRequest'
+      responses:
+        '201':
+          description: Proof request verified successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyProofRequestResponse'
+          x-gitbook-description-html: <p>Proof request verified successfully.</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-define-request
+  /api/lob/{lob_id}/proof-request/url:
+    post:
+      operationId: ProofController_proofRequestURL
+      summary: >-
+        The Prepare URL for Proof Request API is called to prepare a URL-based
+        proof request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+        - name: connectionless
+          required: true
+          in: query
+          example: false
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProofRequestURLDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofRequestURLResponseDto'
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-request
+  /api/lob/{lob_id}/proof-request/send-oob:
+    post:
+      operationId: ProofController_proofRequestOOB
+      summary: >-
+        The Send Out of Band Proof Request API is called to send a proof request
+        as an out-of-band request
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+        - name: connectionless
+          required: true
+          in: query
+          example: false
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProofRequestOOBDto'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofRequestOOBResponseDto'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-request
+  /api/lob/{lob_id}/proof-request/send-contact:
+    post:
+      operationId: ProofController_proofRequestToContact
+      summary: >-
+        The Send Proof Request to Contact API is called to send a proof request
+        to an established contact
+      parameters:
+        - name: lob_id
+          required: true
+          in: path
+          description: UUID received upon LOB registration
+          schema:
+            type: string
+          x-gitbook-description-html: <p>UUID received upon LOB registration</p>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProofRequestContactDto'
+      responses:
+        '201':
+          description: API successfully created new records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProofRequestResponseDto'
+          x-gitbook-description-html: <p>API successfully created new records</p>
+        '400':
+          description: A required parameter was missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          x-gitbook-description-html: <p>A required parameter was missing in the request</p>
+        '401':
+          description: Invalid API Key included in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          x-gitbook-description-html: <p>Invalid API Key included in the request</p>
+        '404':
+          description: URL cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+          x-gitbook-description-html: <p>URL cannot be found</p>
+        '500':
+          description: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+          x-gitbook-description-html: >-
+            <p>The server encountered an unexpected condition that prevented it
+            from fulfilling the request</p>
+      security:
+        - api-key: []
+      tags:
+        - proof-request
+info:
+  title: Orbit Verifier API
+  description: >-
+    Verifier API is a SAAS service that Verifier entity uses to verify
+    credential to peer entities.
+  version: '1.0'
+  contact: {}
+  x-gitbook-description-document:
+    object: document
+    data:
+      schemaVersion: 8
+    nodes:
+      - object: block
+        type: paragraph
+        isVoid: false
+        data: {}
+        nodes:
+          - object: text
+            leaves:
+              - object: leaf
+                text: >-
+                  Verifier API is a SAAS service that Verifier entity uses to
+                  verify credential to peer entities.
+                marks: []
+  x-gitbook-description-html: >-
+    <p>Verifier API is a SAAS service that Verifier entity uses to verify
+    credential to peer entities.</p>
+tags: []
+servers: []
+components:
+  securitySchemes:
+    api-key:
+      type: apiKey
+      in: header
+      name: api-key
+  schemas:
+    BadRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: A required parameter was missing in the request
+        error:
+          type: string
+          example: Bad Request
+        statusCode:
+          type: number
+          example: 400
+      required:
+        - message
+        - error
+        - statusCode
+    UnauthorizedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid API Key included in the request
+        error:
+          type: string
+          example: UnauthorizedException
+        statusCode:
+          type: number
+          example: 401
+      required:
+        - message
+        - error
+        - statusCode
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: URL cannot be found
+        error:
+          type: string
+          example: Not Found
+        statusCode:
+          type: number
+          example: 404
+      required:
+        - message
+        - error
+        - statusCode
+    InternalServerErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: >-
+            The server encountered an unexpected condition that prevented it
+            from fulfilling the request
+        error:
+          type: string
+          example: InternalServerErrorException
+        statusCode:
+          type: number
+          example: 500
+      required:
+        - message
+        - error
+        - statusCode
+    RequestedAttributes:
+      type: object
+      properties:
+        attributes:
+          oneOf:
+            - example:
+                - name
+                - description
+                - assessorLevel
+                - assessmentLevel
+              description: >-
+                In case of AnonCred credential format, an array of attribute is
+                requested in the proof definition.
+              x-gitbook-description-html: >-
+                <p>In case of AnonCred credential format, an array of attribute
+                is requested in the proof definition.</p>
+            - example:
+                - name
+                - description
+                - assessorLevel
+                - assessmentLevel
+                - issuedToParty.name
+                - issuedToParty.description
+                - issuedToParty.registeredId
+                - issuedToParty.otherIdentifier
+                - issuedToParty.idScheme.name
+                - issuedToParty.idScheme.issuingAuthority
+                - issuedToParty.idScheme.trustmark[*].fileName
+                - issuedToParty.idScheme.trustmark[*].fileType
+              description: >-
+                In case of JSON-LD credential format, an array of attribute is
+                requested in the proof definition. Dot notation is used to refer
+                nested properties within the json-ld structure (e.g.,
+                "issuedToParty.name").
+              x-gitbook-description-html: >-
+                <p>In case of JSON-LD credential format, an array of attribute
+                is requested in the proof definition. Dot notation is used to
+                refer nested properties within the json-ld structure (e.g.,
+                "issuedToParty.name").</p>
+          description: Attributes structure varies by credentialFormat.
+          x-gitbook-description-html: <p>Attributes structure varies by credentialFormat.</p>
+        proofValidTill:
+          type: object
+          example: '2025-06-18T14:17:46.192Z'
+          description: >-
+            The timestamp or expiration time until which the proof is considered
+            valid.
+          x-gitbook-description-html: >-
+            <p>The timestamp or expiration time until which the proof is
+            considered valid.</p>
+        proofValidFrom:
+          type: object
+          example: '2025-06-18T14:17:46.192Z'
+          description: ''
+        restrictions:
+          example:
+            - schemaId: 1
+              credentialId: 1
+              type:
+                - ConformityAttestation
+                - Party
+                - IdentifierScheme
+                - BinaryFile
+          description: >-
+            An array of restriction objects that limit the proof request to
+            specific schemas, issuers, or credential definitions. Either
+            "schemaId" or "credentialId" must be provided for any credential
+            format. The "type" field is only applicable when the credential
+            format (credFormat) is JSON-LD.
+          type: array
+          items:
+            type: string
+          x-gitbook-description-html: >-
+            <p>An array of restriction objects that limit the proof request to
+            specific schemas, issuers, or credential definitions. Either
+            "schemaId" or "credentialId" must be provided for any credential
+            format. The "type" field is only applicable when the credential
+            format (credFormat) is JSON-LD.</p>
+      required:
+        - attributes
+    RequestedPredicates:
+      type: object
+      properties:
+        attributeName:
+          type: string
+          example: age
+          description: Name of the attribute.
+          x-gitbook-description-html: <p>Name of the attribute.</p>
+        pType:
+          type: string
+          example: <
+          description: Condition for validation.
+          x-gitbook-description-html: <p>Condition for validation.</p>
+        pValue:
+          type: number
+          example: 0
+          description: Threshold value of the attribute to be validated.
+          x-gitbook-description-html: <p>Threshold value of the attribute to be validated.</p>
+        proofValidTill:
+          type: object
+          example: '2025-06-18T14:17:46.193Z'
+          description: >-
+            The timestamp or expiration time until which the proof is considered
+            valid.
+          x-gitbook-description-html: >-
+            <p>The timestamp or expiration time until which the proof is
+            considered valid.</p>
+        proofValidFrom:
+          type: object
+          example: '2025-06-18T14:17:46.193Z'
+          description: ''
+        restrictions:
+          example:
+            - schemaId: 1
+              credentialId: 1
+          description: >-
+            An array of restriction objects that limit the proof request to
+            specific schemas, issuers, or credential definitions.
+          type: array
+          items:
+            type: string
+          x-gitbook-description-html: >-
+            <p>An array of restriction objects that limit the proof request to
+            specific schemas, issuers, or credential definitions.</p>
+      required:
+        - attributeName
+        - pType
+        - pValue
+    ProofDefineRequest:
+      type: object
+      properties:
+        requestedAttributes:
+          description: >-
+            List of credential attributes for which values are requested from
+            the holder’s wallet
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedAttributes'
+          x-gitbook-description-html: >-
+            <p>List of credential attributes for which values are requested from
+            the holder’s wallet</p>
+        requestedPredicates:
+          description: List of requested predicates (if applicable)
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedPredicates'
+          x-gitbook-description-html: <p>List of requested predicates (if applicable)</p>
+        proofName:
+          type: string
+          example: bcovrin proof define
+          description: Provide a name for the proof request
+          x-gitbook-description-html: <p>Provide a name for the proof request</p>
+        proofPurpose:
+          type: string
+          example: for verify anoncreds credential
+          description: Provide a purpose for the proof request
+          x-gitbook-description-html: <p>Provide a purpose for the proof request</p>
+        proofCredFormat:
+          type: string
+          enum:
+            - ANONCREDS
+            - JSONLD
+            - OID4VC
+          description: Proof Request format can be ANONCRED, JSONLD or OID4VC
+          x-gitbook-description-html: <p>Proof Request format can be ANONCRED, JSONLD or OID4VC</p>
+        addVerificationAuthority:
+          type: boolean
+          example: false
+          description: To create request verification authority
+          x-gitbook-description-html: <p>To create request verification authority</p>
+      required:
+        - requestedAttributes
+        - proofName
+        - proofPurpose
+        - proofCredFormat
+    ProofDefine:
+      type: object
+      properties:
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            The unique identifier for the proof that has been defined in the
+            system.
+          x-gitbook-description-html: >-
+            <p>The unique identifier for the proof that has been defined in the
+            system.</p>
+      required:
+        - proofDefineId
+    ProofDefineResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the proof definition operation was successful.
+          x-gitbook-description-html: >-
+            <p>Indicates whether the proof definition operation was
+            successful.</p>
+        message:
+          type: string
+          example: ANONCREDS proof has been defined successfully.
+          description: A message providing information about the operation status.
+          x-gitbook-description-html: <p>A message providing information about the operation status.</p>
+        data:
+          $ref: '#/components/schemas/ProofDefine'
+      required:
+        - success
+        - message
+        - data
+    ProofDefineGet:
+      type: object
+      properties:
+        proofDefineId:
+          type: number
+          example: 1
+          description: The unique identifier for the defined proof.
+          x-gitbook-description-html: <p>The unique identifier for the defined proof.</p>
+        name:
+          type: string
+          example: bcovrin proof define
+          description: The name of the defined proof for identification purposes.
+          x-gitbook-description-html: <p>The name of the defined proof for identification purposes.</p>
+        attributes:
+          $ref: '#/components/schemas/RequestedAttributes'
+        predicates:
+          $ref: '#/components/schemas/RequestedPredicates'
+        proofType:
+          type: string
+          example: ANONCREDS
+          description: >-
+            The type of proof being defined. For example, "ANONCREDS" indicates
+            an AnonCreds proof.
+          x-gitbook-description-html: >-
+            <p>The type of proof being defined. For example, "ANONCREDS"
+            indicates an AnonCreds proof.</p>
+        purpose:
+          type: string
+          example: for verify anoncreds credential
+          description: The purpose or intent of defining this proof.
+          x-gitbook-description-html: <p>The purpose or intent of defining this proof.</p>
+        createdAt:
+          type: string
+          example: '2024-07-19T11:55:33.799Z'
+          description: The timestamp indicating when this proof was created.
+          x-gitbook-description-html: <p>The timestamp indicating when this proof was created.</p>
+        updatedAt:
+          type: string
+          example: '2024-07-19T11:55:33.799Z'
+          description: The timestamp indicating when this proof was last updated.
+          x-gitbook-description-html: <p>The timestamp indicating when this proof was last updated.</p>
+      required:
+        - proofDefineId
+        - name
+        - attributes
+        - predicates
+        - proofType
+        - purpose
+        - createdAt
+        - updatedAt
+    PaginationMeta:
+      type: object
+      properties:
+        totalItems:
+          type: number
+          example: 100
+          description: The total number of items available for pagination.
+          x-gitbook-description-html: <p>The total number of items available for pagination.</p>
+        itemCount:
+          type: number
+          example: 10
+          description: The number of items in the current page.
+          x-gitbook-description-html: <p>The number of items in the current page.</p>
+        itemsPerPage:
+          type: number
+          example: 10
+          description: The number of items per page.
+          x-gitbook-description-html: <p>The number of items per page.</p>
+        totalPages:
+          type: number
+          example: 10
+          description: The total number of pages available.
+          x-gitbook-description-html: <p>The total number of pages available.</p>
+        currentPage:
+          type: number
+          example: 1
+          description: The current page number.
+          x-gitbook-description-html: <p>The current page number.</p>
+      required:
+        - totalItems
+        - itemCount
+        - itemsPerPage
+        - totalPages
+        - currentPage
+    RetrieveProofDefine:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProofDefineGet'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+        - items
+        - meta
+    RetrieveProofDefineResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: >-
+            Indicates whether the operation to fetch the proof definition was
+            successful.
+          x-gitbook-description-html: >-
+            <p>Indicates whether the operation to fetch the proof definition was
+            successful.</p>
+        message:
+          type: string
+          example: define proof-request fetch successfully
+          description: A message describing the result of the fetch operation.
+          x-gitbook-description-html: <p>A message describing the result of the fetch operation.</p>
+        data:
+          $ref: '#/components/schemas/RetrieveProofDefine'
+      required:
+        - success
+        - message
+        - data
+    OOBProofRequest:
+      type: object
+      properties:
+        proofDefineId:
+          type: number
+          example: 1
+          description: ID corresponding to the stored proof request to be sent
+          x-gitbook-description-html: <p>ID corresponding to the stored proof request to be sent</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        recipientEmail:
+          type: string
+          example: john@gmail.com
+          description: >-
+            Specify the email address of the recipient receiving the proof
+            request.
+          x-gitbook-description-html: >-
+            <p>Specify the email address of the recipient receiving the proof
+            request.</p>
+        recipientName:
+          type: string
+          example: john
+          description: Specify the name of the recipient receiving the proof request.
+          x-gitbook-description-html: >-
+            <p>Specify the name of the recipient receiving the proof
+            request.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+      required:
+        - proofDefineId
+        - proofAutoVerify
+        - recipientEmail
+        - recipientName
+    SendOOb:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            The identifier for the proof definition associated with the
+            out-of-band credential proof request.
+          x-gitbook-description-html: >-
+            <p>The identifier for the proof definition associated with the
+            out-of-band credential proof request.</p>
+        proofStatus:
+          type: string
+          example: generated
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - credProofId
+        - proofDefineId
+        - proofStatus
+    SendOObResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the OOB proof request was sent successfully.
+          x-gitbook-description-html: >-
+            <p>Indicates whether the OOB proof request was sent
+            successfully.</p>
+        message:
+          type: string
+          example: out-of-band proof request send successfully.
+          description: Descriptive message about the outcome of the operation.
+          x-gitbook-description-html: <p>Descriptive message about the outcome of the operation.</p>
+        data:
+          $ref: '#/components/schemas/SendOOb'
+      required:
+        - success
+        - message
+        - data
+    QRProofRequest:
+      type: object
+      properties:
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            ID corresponding to the stored proof request for which a URL will be
+            provided as a response
+          x-gitbook-description-html: >-
+            <p>ID corresponding to the stored proof request for which a URL will
+            be provided as a response</p>
+        messageProtocol:
+          type: string
+          example: AIP2_0
+          description: >-
+            The protocol in which the message should be sent and is specified by
+            the sender of the message
+          enum:
+            - AIP2_0
+            - OID4VC
+          x-gitbook-description-html: >-
+            <p>The protocol in which the message should be sent and is specified
+            by the sender of the message</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+      required:
+        - proofDefineId
+        - messageProtocol
+        - proofAutoVerify
+    SendPresentation:
+      type: object
+      properties:
+        shortUrl:
+          type: string
+          example: http://localhost:5001/url/3fa85f64-5717-4562-b3fc-2c963f66afa6
+          format: uri
+          description: Shortened URL for the proof request.
+          x-gitbook-description-html: <p>Shortened URL for the proof request.</p>
+        longUrl:
+          type: string
+          example: >-
+            http://localhost:9001?VRBd056YzJPREkwTkRJd05URTVPVFV3TnpZd09UVTBNelU1TXpVMk5UQTFNRGd4TXpFMk1ESTFPVFkwTlRZd09ETTJOemN6TkRnNE1EUTVOREkwTWpNMk5UYzVPREV4TlRBM01qa3hOelU1TWpFeE5URXdOellpWFYxOUxDQWlibTl1WTJVaU9pQWlPRGt5TlRjNU1UTTVNemMxTWpVeE1qQXpNell5TXpBNEluMD0ifX1dfX19XSwgInNlcnZpY2VzIjogW3siaWQiOiAiI2lubGluZSIsICJ0eXBlIjogImRpZC1jb21tdW5pY2F0aW9uIiwgInJlY2lwaWVudEtleXMiOiBbImRpZDprZXk6ejZNa3R0cXJuQWVxSDl6SENid0RoS0Jab0FucWNKOXczb2tQeXdtOUcyS3l5Sm9iI3o2TWt0dHFybkFlcUg5ekhDYndEaEtCWm9BbnFjSjl3M29rUHl3bTlHMkt5eUpvYiJdLCAic2VydmljZUVuZHBvaW50IjogImh0dHA6Ly91bmRlZmluZWQ6OTAwMSJ9XX0=
+          format: uri
+          description: Long URL containing all the encoded proof request details.
+          x-gitbook-description-html: <p>Long URL containing all the encoded proof request details.</p>
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            This is the ID for the proof request received by the holder and the
+            proof request sent by the verifier
+          x-gitbook-description-html: >-
+            <p>This is the ID for the proof request received by the holder and
+            the proof request sent by the verifier</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofStatus:
+          type: string
+          example: generated
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - shortUrl
+        - longUrl
+        - proofDefineId
+        - credProofId
+        - proofStatus
+    SendPresentationQrResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the QR proof request preparation succeeded.
+          x-gitbook-description-html: <p>Indicates whether the QR proof request preparation succeeded.</p>
+        message:
+          type: string
+          example: prepare qr proof request proceed successfully.
+          description: Descriptive message about the QR proof request preparation.
+          x-gitbook-description-html: <p>Descriptive message about the QR proof request preparation.</p>
+        data:
+          $ref: '#/components/schemas/SendPresentation'
+      required:
+        - success
+        - message
+        - data
+    SendProofRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: comment
+          description: ID corresponding to the stored proof request to be sent
+          x-gitbook-description-html: <p>ID corresponding to the stored proof request to be sent</p>
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            ID corresponding to the stored proof request for which a URL will be
+            provided as a response
+          x-gitbook-description-html: >-
+            <p>ID corresponding to the stored proof request for which a URL will
+            be provided as a response</p>
+        contactId:
+          type: string
+          example: 693a8020-7da8-41af-841b-a7e2caa6cf08
+          description: >-
+            ID corresponding to the contact. This ID will be provided by the
+            Connection API.
+          x-gitbook-description-html: >-
+            <p>ID corresponding to the contact. This ID will be provided by the
+            Connection API.</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+      required:
+        - proofDefineId
+        - contactId
+        - proofAutoVerify
+    SendContact:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            The identifier for the proof definition associated with the
+            out-of-band credential proof request.
+          x-gitbook-description-html: >-
+            <p>The identifier for the proof definition associated with the
+            out-of-band credential proof request.</p>
+        proofStatus:
+          type: string
+          example: request-sent
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - credProofId
+        - proofDefineId
+        - proofStatus
+    SendPresentationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the proof request was sent successfully.
+          x-gitbook-description-html: <p>Indicates whether the proof request was sent successfully.</p>
+        message:
+          type: string
+          example: proof request sent successfully.
+          description: Descriptive message about the outcome of the proof request sending.
+          x-gitbook-description-html: >-
+            <p>Descriptive message about the outcome of the proof request
+            sending.</p>
+        data:
+          $ref: '#/components/schemas/SendContact'
+      required:
+        - success
+        - message
+        - data
+    ProofData:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: The unique identifier of the associated proof request.
+          x-gitbook-description-html: <p>The unique identifier of the associated proof request.</p>
+        updatedAt:
+          type: string
+          example: '2024-11-26T10:15:30.000Z'
+          description: The timestamp indicating when the proof data was last updated.
+          x-gitbook-description-html: >-
+            <p>The timestamp indicating when the proof data was last
+            updated.</p>
+        createdAt:
+          type: string
+          example: '2024-11-25T08:00:00.000Z'
+          description: The timestamp indicating when the proof data was created.
+          x-gitbook-description-html: <p>The timestamp indicating when the proof data was created.</p>
+        proofStatus:
+          type: string
+          example: done
+          description: The current state of the proof data.
+          x-gitbook-description-html: <p>The current state of the proof data.</p>
+        comment:
+          type: string
+          example: Optional comment or additional details.
+          description: An optional comment or message associated with the proof data.
+          x-gitbook-description-html: >-
+            <p>An optional comment or message associated with the proof
+            data.</p>
+        proofAutoVerify:
+          type: boolean
+          example: true
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        contactId:
+          type: string
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          description: The unique identifier of the contact associated with the proof.
+          x-gitbook-description-html: >-
+            <p>The unique identifier of the contact associated with the
+            proof.</p>
+        verified:
+          type: boolean
+          example: 'true'
+          description: Indicates whether the proof was successfully verified.
+          x-gitbook-description-html: <p>Indicates whether the proof was successfully verified.</p>
+        errorMsg:
+          type: string
+          example: abandoned
+          description: >-
+            An optional error message or status describing why the proof process
+            failed or was interrupted.
+          x-gitbook-description-html: >-
+            <p>An optional error message or status describing why the proof
+            process failed or was interrupted.</p>
+        ledgerName:
+          type: string
+          example: bcCovrinTest
+          description: The ledger Id of the credential
+          x-gitbook-description-html: <p>The ledger Id of the credential</p>
+      required:
+        - credProofId
+        - proofStatus
+        - proofAutoVerify
+        - ledgerName
+    PresentationRecordResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: generated
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          description: The current status of the presentation record.
+          x-gitbook-description-html: <p>The current status of the presentation record.</p>
+        data:
+          $ref: '#/components/schemas/ProofData'
+        proofAttributes:
+          type: object
+          description: >-
+            Optional proof attributes. Can contain additional data related to
+            the proof.
+          x-gitbook-description-html: >-
+            <p>Optional proof attributes. Can contain additional data related to
+            the proof.</p>
+      required:
+        - status
+        - data
+    ProofRequestStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates if the API request was successful.
+          x-gitbook-description-html: <p>Indicates if the API request was successful.</p>
+        message:
+          type: string
+          example: present proof request status get successfully.
+          description: A descriptive message about the status of the request.
+          x-gitbook-description-html: <p>A descriptive message about the status of the request.</p>
+        data:
+          $ref: '#/components/schemas/PresentationRecordResponse'
+      required:
+        - success
+        - message
+        - data
+    ProofRequestStatus:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            This is the client cred ID for the proof request received by the
+            holder and the proof request sent by the verifier
+          x-gitbook-description-html: >-
+            <p>This is the client cred ID for the proof request received by the
+            holder and the proof request sent by the verifier</p>
+        proofStatus:
+          type: string
+          example: done
+          description: The current status of the proof request.
+          x-gitbook-description-html: <p>The current status of the proof request.</p>
+        verified:
+          type: boolean
+          example: true
+          description: Indicates whether the proof has been verified successfully.
+          x-gitbook-description-html: <p>Indicates whether the proof has been verified successfully.</p>
+        proofAutoVerify:
+          type: boolean
+          example: true
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        authorityStatement:
+          type: string
+          example: offer-trusted
+          description: >-
+            The authority statement indicating the level of trust for the proof
+            request.
+          x-gitbook-description-html: >-
+            <p>The authority statement indicating the level of trust for the
+            proof request.</p>
+        contactId:
+          type: string
+          example: f3e66bd0-6075-4cc2-9073-e1146ce2c27a
+          description: The contact ID associated with the proof request.
+          x-gitbook-description-html: <p>The contact ID associated with the proof request.</p>
+        ledgerName:
+          type: string
+          example: bcCovrinTest
+          description: The ledger Id of the credential
+          x-gitbook-description-html: <p>The ledger Id of the credential</p>
+      required:
+        - credProofId
+        - proofStatus
+        - verified
+        - proofAutoVerify
+        - authorityStatement
+        - contactId
+        - ledgerName
+    GetProofRequestRecord:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProofRequestStatus'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+        - items
+        - meta
+    ProofRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the operation was successful.
+          x-gitbook-description-html: <p>Indicates whether the operation was successful.</p>
+        message:
+          type: string
+          example: Proof Request record fetch successfully.
+          description: Descriptive message about the result of the fetch operation.
+          x-gitbook-description-html: <p>Descriptive message about the result of the fetch operation.</p>
+        data:
+          $ref: '#/components/schemas/GetProofRequestRecord'
+      required:
+        - success
+        - message
+        - data
+    DeleteProofRequest:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: The unique identifier of the proof request to be deleted.
+          x-gitbook-description-html: <p>The unique identifier of the proof request to be deleted.</p>
+      required:
+        - credProofId
+    DeleteProofResponse:
+      type: object
+      properties:
+        responseDetails:
+          type: string
+          example: Proof request with id '1' has been deleted successfully.
+          description: A message providing details about the delete operation.
+          x-gitbook-description-html: <p>A message providing details about the delete operation.</p>
+        proofDefineId:
+          type: number
+          example: 1
+          description: >-
+            ID corresponding to the stored proof request for which a URL will be
+            provided as a response
+          x-gitbook-description-html: >-
+            <p>ID corresponding to the stored proof request for which a URL will
+            be provided as a response</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: A unique identifier for the client credential proof.
+          x-gitbook-description-html: <p>A unique identifier for the client credential proof.</p>
+        proofStatus:
+          type: string
+          example: done
+          description: The current state of the proof data.
+          x-gitbook-description-html: <p>The current state of the proof data.</p>
+      required:
+        - responseDetails
+        - proofDefineId
+        - proofStatus
+    DeleteProofRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the delete operation was successful.
+          x-gitbook-description-html: <p>Indicates whether the delete operation was successful.</p>
+        message:
+          type: string
+          example: Proof request proceed successfully.
+          description: A descriptive message summarizing the outcome of the delete request.
+          x-gitbook-description-html: >-
+            <p>A descriptive message summarizing the outcome of the delete
+            request.</p>
+        data:
+          $ref: '#/components/schemas/DeleteProofResponse'
+      required:
+        - success
+        - message
+        - data
+    VerifyProofRequest:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: A unique identifier for the client credential proof.
+          x-gitbook-description-html: <p>A unique identifier for the client credential proof.</p>
+      required:
+        - credProofId
+    VerifyProofData:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: The unique ID of the proof request associated with this proof data.
+          x-gitbook-description-html: >-
+            <p>The unique ID of the proof request associated with this proof
+            data.</p>
+        updatedAt:
+          type: string
+          example: '2024-11-25T12:34:56Z'
+          description: The timestamp when the proof data was last updated.
+          x-gitbook-description-html: <p>The timestamp when the proof data was last updated.</p>
+        createdAt:
+          type: string
+          example: '2024-11-25T12:34:56Z'
+          description: The timestamp when the proof data was initially created.
+          x-gitbook-description-html: <p>The timestamp when the proof data was initially created.</p>
+        proofStatus:
+          type: string
+          example: done
+          description: The current state of the proof request.
+          x-gitbook-description-html: <p>The current state of the proof request.</p>
+        proofAutoVerify:
+          type: boolean
+          example: true
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        comment:
+          type: string
+          example: Proof successfully verified.
+          description: Additional comments or notes regarding the proof request.
+          x-gitbook-description-html: <p>Additional comments or notes regarding the proof request.</p>
+        contactId:
+          type: string
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          description: The ID of the contact associated with this proof request.
+          x-gitbook-description-html: <p>The ID of the contact associated with this proof request.</p>
+        verified:
+          type: boolean
+          example: true
+          description: Indicates whether the proof request was successfully verified.
+          x-gitbook-description-html: >-
+            <p>Indicates whether the proof request was successfully
+            verified.</p>
+        errorMsg:
+          type: string
+          example: abandoned
+          description: >-
+            An error message describing any issues encountered during
+            verification.
+          x-gitbook-description-html: >-
+            <p>An error message describing any issues encountered during
+            verification.</p>
+        ledgerName:
+          type: string
+          example: bcCovrinTest
+          description: The ledger Id of the credential
+          x-gitbook-description-html: <p>The ledger Id of the credential</p>
+      required:
+        - credProofId
+        - proofStatus
+        - proofAutoVerify
+        - ledgerName
+    VerifyPresentationRecordResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          description: The status of the presentation verification process.
+          x-gitbook-description-html: <p>The status of the presentation verification process.</p>
+        data:
+          $ref: '#/components/schemas/VerifyProofData'
+        proofAttributes:
+          type: object
+          example:
+            HiNg6sdwNYwPRTTP9VkwpT:3:CL:2535708:Aadhar_card:
+              - credentialName: HiNg6sdwNYwPRTTP9VkwpT:3:CL:2545708:Aadhar_card
+                attributes:
+                  - full_name: John Doe
+          description: Optional attributes of the proof used in the verification process.
+          x-gitbook-description-html: >-
+            <p>Optional attributes of the proof used in the verification
+            process.</p>
+      required:
+        - status
+        - data
+    VerifyProofRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Should be “true” in the response body for series 200 response
+          x-gitbook-description-html: <p>Should be “true” in the response body for series 200 response</p>
+        message:
+          type: string
+          example: Proof request verified successfully.
+          description: >-
+            Standardized description of the response body for series 200, 300,
+            400 and 500 response
+          x-gitbook-description-html: >-
+            <p>Standardized description of the response body for series 200,
+            300, 400 and 500 response</p>
+        data:
+          $ref: '#/components/schemas/VerifyPresentationRecordResponse'
+      required:
+        - success
+        - message
+        - data
+    ProofRequestURLDto:
+      type: object
+      properties:
+        messageProtocol:
+          type: string
+          example: AIP2_0
+          description: >-
+            The protocol in which the message should be sent and is specified by
+            the sender of the message
+          enum:
+            - AIP2_0
+            - OID4VC
+          x-gitbook-description-html: >-
+            <p>The protocol in which the message should be sent and is specified
+            by the sender of the message</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+        requestedAttributes:
+          description: >-
+            List of credential attributes for which values are requested from
+            the holder’s wallet
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedAttributes'
+          x-gitbook-description-html: >-
+            <p>List of credential attributes for which values are requested from
+            the holder’s wallet</p>
+        requestedPredicates:
+          description: List of requested predicates (if applicable)
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedPredicates'
+          x-gitbook-description-html: <p>List of requested predicates (if applicable)</p>
+        proofName:
+          type: string
+          example: bcovrin proof define
+          description: Provide a name for the proof request
+          x-gitbook-description-html: <p>Provide a name for the proof request</p>
+        proofPurpose:
+          type: string
+          example: for verify anoncreds credential
+          description: Provide a purpose for the proof request
+          x-gitbook-description-html: <p>Provide a purpose for the proof request</p>
+        proofCredFormat:
+          type: string
+          enum:
+            - ANONCREDS
+            - JSONLD
+            - OID4VC
+          description: Proof Request format can be ANONCRED, JSONLD or OID4VC
+          x-gitbook-description-html: <p>Proof Request format can be ANONCRED, JSONLD or OID4VC</p>
+        addVerificationAuthority:
+          type: boolean
+          example: false
+          description: To create request verification authority
+          x-gitbook-description-html: <p>To create request verification authority</p>
+      required:
+        - messageProtocol
+        - proofAutoVerify
+        - requestedAttributes
+        - proofName
+        - proofPurpose
+        - proofCredFormat
+    SendQRProofRequestPresentation:
+      type: object
+      properties:
+        shortUrl:
+          type: string
+          example: http://localhost:5001/url/3fa85f64-5717-4562-b3fc-2c963f66afa6
+          format: uri
+          description: Shortened URL for the proof request.
+          x-gitbook-description-html: <p>Shortened URL for the proof request.</p>
+        longUrl:
+          type: string
+          example: >-
+            http://localhost:9001?VRBd056YzJPREkwTkRJd05URTVPVFV3TnpZd09UVTBNelU1TXpVMk5UQTFNRGd4TXpFMk1ESTFPVFkwTlRZd09ETTJOemN6TkRnNE1EUTVOREkwTWpNMk5UYzVPREV4TlRBM01qa3hOelU1TWpFeE5URXdOellpWFYxOUxDQWlibTl1WTJVaU9pQWlPRGt5TlRjNU1UTTVNemMxTWpVeE1qQXpNell5TXpBNEluMD0ifX1dfX19XSwgInNlcnZpY2VzIjogW3siaWQiOiAiI2lubGluZSIsICJ0eXBlIjogImRpZC1jb21tdW5pY2F0aW9uIiwgInJlY2lwaWVudEtleXMiOiBbImRpZDprZXk6ejZNa3R0cXJuQWVxSDl6SENid0RoS0Jab0FucWNKOXczb2tQeXdtOUcyS3l5Sm9iI3o2TWt0dHFybkFlcUg5ekhDYndEaEtCWm9BbnFjSjl3M29rUHl3bTlHMkt5eUpvYiJdLCAic2VydmljZUVuZHBvaW50IjogImh0dHA6Ly91bmRlZmluZWQ6OTAwMSJ9XX0=
+          format: uri
+          description: Long URL containing all the encoded proof request details.
+          x-gitbook-description-html: <p>Long URL containing all the encoded proof request details.</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofStatus:
+          type: string
+          example: generated
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - shortUrl
+        - longUrl
+        - credProofId
+        - proofStatus
+    ProofRequestURLResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the QR proof request preparation succeeded.
+          x-gitbook-description-html: <p>Indicates whether the QR proof request preparation succeeded.</p>
+        message:
+          type: string
+          example: prepare qr proof request proceed successfully.
+          description: Descriptive message about the QR proof request preparation.
+          x-gitbook-description-html: <p>Descriptive message about the QR proof request preparation.</p>
+        data:
+          $ref: '#/components/schemas/SendQRProofRequestPresentation'
+      required:
+        - success
+        - message
+        - data
+    ProofRequestOOBDto:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        recipientEmail:
+          type: string
+          example: john@gmail.com
+          description: >-
+            Specify the email address of the recipient receiving the proof
+            request.
+          x-gitbook-description-html: >-
+            <p>Specify the email address of the recipient receiving the proof
+            request.</p>
+        recipientName:
+          type: string
+          example: john
+          description: Specify the name of the recipient receiving the proof request.
+          x-gitbook-description-html: >-
+            <p>Specify the name of the recipient receiving the proof
+            request.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+        requestedAttributes:
+          description: >-
+            List of credential attributes for which values are requested from
+            the holder’s wallet
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedAttributes'
+          x-gitbook-description-html: >-
+            <p>List of credential attributes for which values are requested from
+            the holder’s wallet</p>
+        requestedPredicates:
+          description: List of requested predicates (if applicable)
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedPredicates'
+          x-gitbook-description-html: <p>List of requested predicates (if applicable)</p>
+        proofName:
+          type: string
+          example: bcovrin proof define
+          description: Provide a name for the proof request
+          x-gitbook-description-html: <p>Provide a name for the proof request</p>
+        proofPurpose:
+          type: string
+          example: for verify anoncreds credential
+          description: Provide a purpose for the proof request
+          x-gitbook-description-html: <p>Provide a purpose for the proof request</p>
+        proofCredFormat:
+          type: string
+          enum:
+            - ANONCREDS
+            - JSONLD
+            - OID4VC
+          description: Proof Request format can be ANONCRED, JSONLD or OID4VC
+          x-gitbook-description-html: <p>Proof Request format can be ANONCRED, JSONLD or OID4VC</p>
+        addVerificationAuthority:
+          type: boolean
+          example: false
+          description: To create request verification authority
+          x-gitbook-description-html: <p>To create request verification authority</p>
+      required:
+        - proofAutoVerify
+        - recipientEmail
+        - recipientName
+        - requestedAttributes
+        - proofName
+        - proofPurpose
+        - proofCredFormat
+    SendOObData:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofStatus:
+          type: string
+          example: generated
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - credProofId
+        - proofStatus
+    ProofRequestOOBResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the OOB proof request was sent successfully.
+          x-gitbook-description-html: >-
+            <p>Indicates whether the OOB proof request was sent
+            successfully.</p>
+        message:
+          type: string
+          example: out-of-band proof request send successfully.
+          description: Descriptive message about the outcome of the operation.
+          x-gitbook-description-html: <p>Descriptive message about the outcome of the operation.</p>
+        data:
+          $ref: '#/components/schemas/SendOObData'
+      required:
+        - success
+        - message
+        - data
+    ProofRequestContactDto:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: comment
+          description: ID corresponding to the stored proof request to be sent
+          x-gitbook-description-html: <p>ID corresponding to the stored proof request to be sent</p>
+        contactId:
+          type: string
+          example: 693a8020-7da8-41af-841b-a7e2caa6cf08
+          description: >-
+            ID corresponding to the contact. This ID will be provided by the
+            Connection API.
+          x-gitbook-description-html: >-
+            <p>ID corresponding to the contact. This ID will be provided by the
+            Connection API.</p>
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof. If not
+            provided, a new UUID will be generated automatically.</p>
+        proofAutoVerify:
+          type: boolean
+          example: false
+          description: >-
+            Specifies whether the proof verification process should be performed
+            automatically upon fetching the proof definition.
+          x-gitbook-description-html: >-
+            <p>Specifies whether the proof verification process should be
+            performed automatically upon fetching the proof definition.</p>
+        createClaim:
+          type: boolean
+          example: false
+          description: >-
+            Flag indicating whether the claim is being created. Set to true to
+            initiate the claim creation process.
+          x-gitbook-description-html: >-
+            <p>Flag indicating whether the claim is being created. Set to true
+            to initiate the claim creation process.</p>
+        requestedAttributes:
+          description: >-
+            List of credential attributes for which values are requested from
+            the holder’s wallet
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedAttributes'
+          x-gitbook-description-html: >-
+            <p>List of credential attributes for which values are requested from
+            the holder’s wallet</p>
+        requestedPredicates:
+          description: List of requested predicates (if applicable)
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedPredicates'
+          x-gitbook-description-html: <p>List of requested predicates (if applicable)</p>
+        proofName:
+          type: string
+          example: bcovrin proof define
+          description: Provide a name for the proof request
+          x-gitbook-description-html: <p>Provide a name for the proof request</p>
+        proofPurpose:
+          type: string
+          example: for verify anoncreds credential
+          description: Provide a purpose for the proof request
+          x-gitbook-description-html: <p>Provide a purpose for the proof request</p>
+        proofCredFormat:
+          type: string
+          enum:
+            - ANONCREDS
+            - JSONLD
+            - OID4VC
+          description: Proof Request format can be ANONCRED, JSONLD or OID4VC
+          x-gitbook-description-html: <p>Proof Request format can be ANONCRED, JSONLD or OID4VC</p>
+        addVerificationAuthority:
+          type: boolean
+          example: false
+          description: To create request verification authority
+          x-gitbook-description-html: <p>To create request verification authority</p>
+      required:
+        - contactId
+        - proofAutoVerify
+        - requestedAttributes
+        - proofName
+        - proofPurpose
+        - proofCredFormat
+    SendContactProofData:
+      type: object
+      properties:
+        credProofId:
+          type: string
+          example: 58e02d58-a762-469e-84ba-882a47345775
+          description: >-
+            A unique identifier for the client credential proof being sent
+            out-of-band.
+          x-gitbook-description-html: >-
+            <p>A unique identifier for the client credential proof being sent
+            out-of-band.</p>
+        proofStatus:
+          type: string
+          example: request-sent
+          description: The current status of the proof request being sent out-of-band.
+          enum:
+            - generated
+            - scanned
+            - request-sent
+            - proof-received
+            - success
+            - revoked
+            - verification-failed
+          x-gitbook-description-html: >-
+            <p>The current status of the proof request being sent
+            out-of-band.</p>
+      required:
+        - credProofId
+        - proofStatus
+    ProofRequestResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: Indicates whether the proof request was sent successfully.
+          x-gitbook-description-html: <p>Indicates whether the proof request was sent successfully.</p>
+        message:
+          type: string
+          example: proof request sent successfully.
+          description: Descriptive message about the outcome of the proof request sending.
+          x-gitbook-description-html: >-
+            <p>Descriptive message about the outcome of the proof request
+            sending.</p>
+        data:
+          $ref: '#/components/schemas/SendContactProofData'
+      required:
+        - success
+        - message
+        - data
